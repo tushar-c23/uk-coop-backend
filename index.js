@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 
 const userRoutes = require('./routes/user');
 
-const sequelize = new Sequelize('postgres://postgres:postgres@localhost:5432/uk_coop_be');
+const sequelize = new Sequelize('postgres://postgres:postgres@localhost:5432/uk_coop_be'); //db_uri --Tushar
 
 //DB Connection test
 async function dbTest() {
