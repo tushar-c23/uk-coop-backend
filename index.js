@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 
 const userRoutes = require('./routes/user');
 
-const sequelize = new Sequelize('postgres://postgres:postgres@localhost:5432/uk_coop_be'); //db_uri --Tushar
+const sequelize = new Sequelize('postgres://postgres:postgres@localhost:5432/uk_coop_be'); //db_uri --Tushar | Comment this when not required
 const User = require('./models/user');
 
 //DB Connection test to be moved to utils
@@ -42,6 +42,8 @@ async function persistToDB() {
         console.error('Unable to persist:', error);
     }
 }
+// TODO: Hanndle promise rejection all kinds
+// Like duplicate data and stuff
 persistToDB();
 //Other method
 const xyz = User.create({email: "xyz@gmail.com", password: "xyz", mobile_number: "1234567890"});
