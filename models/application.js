@@ -268,7 +268,7 @@ const Application = sequelize.define('Application', {
     }
 })
 
-Application.sync().then(
+Application.sync({alter: true}).then(
     () => console.log("Applications table synced successfully")
 );
 
