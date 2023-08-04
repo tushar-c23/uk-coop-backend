@@ -28,4 +28,33 @@ async function registerUser(req, res) {
     }
 }
 
-module.exports = { registerUser }
+async function loginUser(req, res) {
+    try {
+        const { email, password } = req.body;
+
+        const user = await User.findOne({
+            where: {
+                email: email
+            }
+        });
+
+        //if user email is found, compare password with bcrypt
+        if (user) {
+            const isSame = await bcrypt.compare(password, user.password);
+            if (isSame) {
+
+            }
+            else {
+                return res.status(401).send("Authentication failed");
+            }
+        }
+        else {
+            return res.status(401).send("Authentication failed");
+        }
+
+    }
+    catch (e) {
+        console.log(e.message);
+    }
+}
+module.exports = { registerUser,loginUser }
