@@ -1,6 +1,5 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-
 /**
  * 
  * @param {*} req 
@@ -12,7 +11,7 @@ const bcrypt = require('bcrypt');
  */
 async function registerUser(req, res) {
     try {
-        const { email, password, mobile_number } = req.body;
+        const { email, password, mobile_number } = req.body;        
         const data = {
             email,
             password: await bcrypt.hash(password, 12),
@@ -42,7 +41,7 @@ async function loginUser(req, res) {
         if (user) {
             const isSame = await bcrypt.compare(password, user.password);
             if (isSame) {
-
+                res.send('Authentication Successful');
             }
             else {
                 return res.status(401).send("Authentication failed");
