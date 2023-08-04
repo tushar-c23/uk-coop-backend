@@ -7,20 +7,40 @@ const User = sequelize.define('User', {
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4,
         allowNull: false,
-        primaryKey: true
+        primaryKey: true,
+        get() {
+            return this.getDataValue('id');
+        }
     },
     email: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
+        isEmail: true,
+        get() {
+            return this.getDataValue('email');
+        }
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        get() {
+            return this.getDataValue('password');
+        },
+        set(value) {
+            this.setDataValue('password', value);
+        }
     },
     mobile_number: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: DataTypes.INTEGER(10),
+        allowNull: false,
+        isNumeric: true,
+        get() {
+            return this.getDataValue('mobile_number');
+        },
+        set(value) {
+            this.setDataValue('mobile_number', value);
+        }
     }
 });
 
