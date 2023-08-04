@@ -31,9 +31,9 @@ async function dbSync() {
 dbSync();
 
 //Test db
-const abc = User.build({email: "abc@gmail.com", password: "abc", mobile_number: "1234567890"});
-console.log(abc instanceof User);
-console.log(abc.email);
+// const abc = User.build({email: "abc@gmail.com", password: "abc", mobile_number: "1234567890"});
+// console.log(abc instanceof User);
+// console.log(abc.email);
 async function persistToDB() {
     try {
         await abc.save();
@@ -44,15 +44,17 @@ async function persistToDB() {
 }
 // TODO: Hanndle promise rejection all kinds
 // Like duplicate data and stuff
-persistToDB();
+// persistToDB();
 //Other method
-const xyz = User.create({email: "xyz@gmail.com", password: "xyz", mobile_number: "1234567890"});
-console.log(xyz instanceof User);
-console.log(xyz.email);
+// const xyz = User.create({email: "xyz@gmail.com", password: "xyz", mobile_number: "1234567890"});
+// console.log(xyz instanceof User);
+// console.log(xyz.email);
 
 const app = express();
 
-// app.use('/user', userRoutes);
+app.use(express.urlencoded({ extended: true }));
+
+app.use('/user', userRoutes);
 // app.use('/application', applicationRoutes);
 
 app.get('/', (req, res) => {
