@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize('postgres://postgres:postgres@localhost:5432/uk_coop_be'); //db_uri --Tushar
+const User = require('./user');
 
 // Possible bifercation of promoter possible, but not required as of now
 //TODO: Add all districts and others
@@ -41,6 +42,15 @@ const Application = sequelize.define('Application', {
         set(value) {
             this.setDataValue('mobile_number', value);
         }
+    },
+    user_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+            model: User,
+            key: 'id'
+        },
+        isUUID: 4
     },
     society_type: {
         type: DataTypes.STRING,
