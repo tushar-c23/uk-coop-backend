@@ -4,7 +4,7 @@ const User = require('./user');
 
 // Possible bifercation of promoter possible, but not required as of now
 //TODO: Add all districts and others
-const districts = ["Almora","Nainital"];
+const districts = ["Almora", "Nainital"];
 const society_types = ["Deendayal", "Cooperative Deal Plan", "Fisheries", "Dairy", "Sheep & Goat"];
 const divisions = ["Kumaon", "Garhwal"];
 
@@ -22,7 +22,6 @@ const Application = sequelize.define('Application', {
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
         isEmail: true,
         get() {
             return this.getDataValue('email');
@@ -32,7 +31,7 @@ const Application = sequelize.define('Application', {
         }
     },
     mobile_number: {
-        type: DataTypes.INTEGER(10),
+        type: DataTypes.BIGINT(10),
         allowNull: false,
         isNumeric: true,
         len: [10],
@@ -197,7 +196,7 @@ const Application = sequelize.define('Application', {
         }
     },
     promoter_mobile_number: {
-        type: DataTypes.INTEGER(10),
+        type: DataTypes.BIGINT(10),
         allowNull: false,
         isNumeric: true,
         get() {
@@ -268,7 +267,7 @@ const Application = sequelize.define('Application', {
     }
 })
 
-Application.sync({alter: true}).then(
+Application.sync({ alter: true }).then(
     () => console.log("Applications table synced successfully")
 );
 
