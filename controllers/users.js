@@ -11,7 +11,7 @@ const bcrypt = require('bcrypt');
  */
 async function registerUser(req, res) {
     try {
-        const { email, password, mobile_number } = req.body;        
+        const { email, password, mobile_number } = req.body;
         const data = {
             email,
             password: await bcrypt.hash(password, 12),
@@ -56,4 +56,4 @@ async function loginUser(req, res) {
         console.log(e.message);
     }
 }
-module.exports = { registerUser,loginUser }
+module.exports = { registerUser, loginUser }
