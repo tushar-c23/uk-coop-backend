@@ -3,6 +3,7 @@ const { Sequelize } = require('sequelize');
 
 const userRoutes = require('./routes/user');
 const applicationRoutes=require('./routes/application');
+const adminRoutes=require('./routes/admin');
 
 const sequelize = new Sequelize('postgres://postgres:postgres@localhost:5432/uk_coop_be'); //db_uri --Tushar | Comment this when not required
 const User = require('./models/user');
@@ -57,6 +58,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/user', userRoutes);
 app.use('/application', applicationRoutes);
+app.use('/admin',adminRoutes);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
