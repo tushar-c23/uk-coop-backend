@@ -1,7 +1,6 @@
 const User = require('../models/user');
 const Application = require('../models/application');
 
-
 async function applicationForm(req, res) {
     try {
         const data = req.body;
@@ -35,7 +34,6 @@ async function applicationForm(req, res) {
     }
 }
 
-
 async function applicationStatus(req, res) {
     try {
         const { email } = req.body;
@@ -56,7 +54,6 @@ async function applicationStatus(req, res) {
                 status: application[i].status
             })
         }
-
         res.send(data);
     }
     catch (e) {
