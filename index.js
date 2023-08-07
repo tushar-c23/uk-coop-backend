@@ -1,5 +1,6 @@
 const express = require('express');
 const { Sequelize } = require('sequelize');
+const cors = require('cors');
 
 const userRoutes = require('./routes/user');
 const applicationRoutes=require('./routes/application');
@@ -55,6 +56,7 @@ async function persistToDB() {
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use('/user', userRoutes);
 app.use('/application', applicationRoutes);
