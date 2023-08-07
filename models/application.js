@@ -4,7 +4,7 @@ const User = require('./user');
 
 // Possible bifercation of promoter possible, but not required as of now
 //TODO: Add all districts and others
-const districts = ["Almora", "Nainital"];
+const districts = ["Almora", "Nainital", "Chamoli", "Dehradun", "Haridwar", "Pauri Garhwal", "Pithoragarh", "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi", "Champawat", "Bageshwar"];
 const society_types = ["Deendayal", "Cooperative Deal Plan", "Fisheries", "Dairy", "Sheep & Goat"];
 const divisions = ["Kumaon", "Garhwal"];
 
@@ -257,7 +257,7 @@ const Application = sequelize.define('Application', {
     },
     due_date: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
         get() {
             return this.getDataValue('due_date');
         },

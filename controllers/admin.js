@@ -58,4 +58,20 @@ async function applicationStatus(req, res) {
     }
 }
 
-module.exports = { allApplications, singleApplication, applicationStatus };
+async function applicationsInDistrict(req,res) {
+    try {
+        const { district } = req.body;
+        const applications = await Application.findAll({
+            where: {
+                promoter_district: district
+            }
+        });
+        res.send(applications);
+    }
+    catch(e) {
+        res.send("Error in fetching applications in district");
+        console.log(e.message);
+    }
+}
+
+module.exports = { allApplications, singleApplication, applicationStatus, applicationsInDistrict };
