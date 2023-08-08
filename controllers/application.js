@@ -36,8 +36,8 @@ async function applicationForm(req, res) {
 
 async function applicationStatus(req, res) {
     try {
-        const { email } = req.body;
-
+        const { email } = req.query;
+        
         //Find the user using the email 
         const application = await Application.findAll({
             where: {
