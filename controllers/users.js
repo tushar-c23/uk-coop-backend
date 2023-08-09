@@ -19,7 +19,11 @@ async function registerUser(req, res) {
         }
         const user = await User.create(data);
         console.log("User created successfully");
-        res.send("User created successfully");
+        res.send({
+            status: 200,
+            message: "User created successfully",
+            data: user,
+        });
     } catch (e) {
         console.log("Error in registering user");
         console.log(e.message);
@@ -41,7 +45,11 @@ async function loginUser(req, res) {
         if (user) {
             const isSame = await bcrypt.compare(password, user.password);
             if (isSame) {
-                res.send('Authentication Successful');
+                res.send({
+                    status: 200,
+                    message: "User created successfully",
+                    data: user,
+                });
             }
             else {
                 return res.status(401).send("Authentication failed");
