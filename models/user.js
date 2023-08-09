@@ -41,11 +41,23 @@ const User = sequelize.define('User', {
         set(value) {
             this.setDataValue('mobile_number', value);
         }
+    },
+    role: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: 'user',
+        isIn: [['master_admin','district_admin', 'user']],
+        get() {
+            return this.getDataValue('role');
+        },
+        set(value) {
+            this.setDataValue('role', value);
+        }
     }
 });
 
 // TODO: Call this efficiently
-User.sync().then(
+User.sync({alter: true}).then(
     () => console.log("User table created successfully")
 );
 
