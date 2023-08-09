@@ -1,4 +1,6 @@
 const Application = require('../models/application');
+const Admin = require('../models/admin');
+const bcrypt = require('bcrypt');
 
 async function allApplications(req, res) {
     try {
@@ -74,4 +76,62 @@ async function applicationsInDistrict(req,res) {
     }
 }
 
-module.exports = { allApplications, singleApplication, applicationStatus, applicationsInDistrict };
+async function registerAdmin(req, res) {
+    try {
+        const { username, password, mobile_number, role, district } = req.body;
+        const data = {
+            username,
+            password: await bcrypt.hash(password, 12),
+            mobile_number,
+            role,
+            district
+        }
+        const newAdmin = await Admin.create(data);
+        console.log(role+" created successfully");
+        res.send({
+            status: 200,
+            message: role+" created successfully"+ district? " in "+district : "",
+            data: newAdmin,
+        });
+    } catch (e) {
+        console.log("Error in registering admin");
+        console.log(e.message);
+        res.send("Error in registering admin");
+    }
+}
+
+async function loginAdmin(req, res) {
+    try {
+        const { username, password } = req.body;
+
+        const logAdmin = await Admin.findOne({
+            where: {
+                username: username
+            }
+        });
+
+        //if username is found, compare password with bcrypt
+        if (logAdmin) {
+            const isSame = await bcrypt.compare(password, logAdmin.password);
+            if (isSame) {
+                res.send({
+                    status: 200,
+                    message: logAdmin.role + "Admin logged in successfully",
+                    data: logAdmin,
+                });
+            }
+            else {
+                return res.status(401).send("Authentication failed");
+            }
+        }
+        else {
+            return res.status(401).send("Authentication failed");
+        }
+
+    }
+    catch (e) {
+        console.log(e.message);
+    }
+}
+
+module.exports = { allApplications, singleApplication, applicationStatus, applicationsInDistrict, registerAdmin, loginAdmin };

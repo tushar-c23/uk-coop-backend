@@ -3,7 +3,7 @@ const sequelize = new Sequelize('postgres://postgres:postgres@localhost:5432/uk_
 
 const districts = ["Almora", "Nainital", "Chamoli", "Dehradun", "Haridwar", "Pauri Garhwal", "Pithoragarh", "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi", "Champawat", "Bageshwar"];
 
-const User = sequelize.define('User', {
+const Admin = sequelize.define('Admin', {
     // Model attributes are defined here
     id: {
         type: Sequelize.UUID,
@@ -14,13 +14,15 @@ const User = sequelize.define('User', {
             return this.getDataValue('id');
         }
     },
-    email: {
+    username: {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true,
-        isEmail: true,
         get() {
-            return this.getDataValue('email');
+            return this.getDataValue('username');
+        },
+        set(value) {
+            this.setDataValue('username', value);
         }
     },
     password: {
@@ -43,12 +45,35 @@ const User = sequelize.define('User', {
         set(value) {
             this.setDataValue('mobile_number', value);
         }
+    },
+    role: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: 'user',
+        isIn: [['master_admin','district_admin']],
+        get() {
+            return this.getDataValue('role');
+        },
+        set(value) {
+            this.setDataValue('role', value);
+        }
+    },
+    district: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        isIn: [districts],
+        get() {
+            return this.getDataValue('district');
+        },
+        set(value) {
+            this.setDataValue('district', value);
+        }
     }
 });
 
 // TODO: Call this efficiently
-User.sync({alter: true}).then(
-    () => console.log("User table created successfully")
+Admin.sync({alter: true}).then(
+    () => console.log("Admin table created successfully")
 );
 
-module.exports = User;
+module.exports = Admin;

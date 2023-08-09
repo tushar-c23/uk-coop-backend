@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const admin = require('../controllers/admin');
 
+router.route('/register')
+    .post(admin.registerAdmin);
+
+router.route('/login')
+    .post(admin.loginAdmin);
+
 router.route('/applications/all')
     .get(admin.allApplications);
 

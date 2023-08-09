@@ -2,8 +2,8 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 /**
  * 
- * @param {*} req 
- * @param {*} res
+ * @param { email, password, mobile_number} req 
+ * @param { User, message, status} res
  * @description Register a user via simple push data to DB
  * @returns "User created successfully" || "Error in registering user"
  * @todo Add regex verification for email and mobile_number
@@ -47,7 +47,7 @@ async function loginUser(req, res) {
             if (isSame) {
                 res.send({
                     status: 200,
-                    message: "User created successfully",
+                    message: "User logged in successfully",
                     data: user,
                 });
             }
