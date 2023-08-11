@@ -62,7 +62,7 @@ async function applicationStatus(req, res) {
 
 async function applicationsInDistrict(req,res) {
     try {
-        const { district } = req.body;
+        const { district } = req.query;
         const applications = await Application.findAll({
             where: {
                 promoter_district: district
