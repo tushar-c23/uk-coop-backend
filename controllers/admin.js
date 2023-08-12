@@ -24,13 +24,13 @@ async function singleApplication(req, res) {
                 id: id
             }
         });
-        const data = {
-            id: application.id,
-            submission_date: application.submission_date,
-            due_date: application.due_date,
-            status: application.status
-        };
-        res.send(data);
+        // const data = {
+        //     id: application.id,
+        //     submission_date: application.submission_date,
+        //     due_date: application.due_date,
+        //     status: application.status
+        // };
+        res.send({status:200, message:"Application fetched Successfully" ,data:application});
         console.log("Single application fetched successfully");
     }
     catch (e) {
@@ -51,8 +51,9 @@ async function applicationStatus(req, res) {
                 where: { id: id }
             }
         )
-        res.redirect(`/admin/applications/${id}`);
-        console.log("Status updated successfully");       
+        // res.redirect(`/admin/applications/${id}`);
+        res.send(`Status changed to ${status} of application id ${id}`);
+        console.log("Status updated successfully");
     }
     catch (e) {
         res.send("Staus updated failed");
@@ -60,7 +61,7 @@ async function applicationStatus(req, res) {
     }
 }
 
-async function applicationsInDistrict(req,res) {
+async function applicationsInDistrict(req, res) {
     try {
         const { district } = req.query;
         const applications = await Application.findAll({
@@ -70,7 +71,7 @@ async function applicationsInDistrict(req,res) {
         });
         res.send(applications);
     }
-    catch(e) {
+    catch (e) {
         res.send("Error in fetching applications in district");
         console.log(e.message);
     }
@@ -87,10 +88,10 @@ async function registerAdmin(req, res) {
             district
         }
         const newAdmin = await Admin.create(data);
-        console.log(role+" created successfully");
+        console.log(role + " created successfully");
         res.send({
             status: 200,
-            message: role+" created successfully"+ district? " in "+district : "",
+            message: role + " created successfully" + district ? " in " + district : "",
             data: newAdmin,
         });
     } catch (e) {
