@@ -34,7 +34,7 @@ const User = sequelize.define('User', {
         }
     },
     mobile_number: {
-        type: DataTypes.INTEGER(10),
+        type: DataTypes.STRING(10),
         allowNull: false,
         isNumeric: true,
         get() {
