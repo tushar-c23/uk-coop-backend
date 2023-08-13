@@ -7,7 +7,7 @@ const userRoutes = require('./routes/user');
 const applicationRoutes=require('./routes/application');
 const adminRoutes=require('./routes/admin');
 
-const sequelize = new Sequelize(process.env.DB_URI); //db_uri --Tushar | Comment this when not required
+const sequelize = new Sequelize(process.env.DB_URI);
 const User = require('./models/user');
 
 //DB Connection test to be moved to utils
@@ -25,8 +25,8 @@ dbTest();
 // TODO: Remove alter: true in production, add regex verification later for production db. "Ensure production db with proper suffix"
 async function dbSync() {
     try {
-        // await sequelize.sync({ alter: true });
-        await User.sync();
+        await sequelize.sync();
+        // await User.sync();
         console.log('All models were synchronized successfully.');
     } catch (error) {
         console.error('Unable to sync the models:', error);
