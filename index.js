@@ -1,12 +1,13 @@
 const express = require('express');
 const { Sequelize } = require('sequelize');
 const cors = require('cors');
+const env = require('dotenv').config();
 
 const userRoutes = require('./routes/user');
 const applicationRoutes=require('./routes/application');
 const adminRoutes=require('./routes/admin');
 
-const sequelize = new Sequelize('postgres://postgres:postgres@localhost:5432/uk_coop_be'); //db_uri --Tushar | Comment this when not required
+const sequelize = new Sequelize(process.env.DB_URI); //db_uri --Tushar | Comment this when not required
 const User = require('./models/user');
 
 //DB Connection test to be moved to utils
