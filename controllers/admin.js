@@ -73,9 +73,10 @@ async function singleApplication(req, res) {
 
 /**
  * 
+ * @param {*} params applicationId
  * @param {*} req admin_role,admin_id,status
- * @param {*} res Status changed to ${status} of application id ${id} || Staus update failed
- * @notes Status can be Approved, Rejected, Pending or anything else
+ * @returns Status changed to ${status} of application id ${id} || Staus update failed
+ * @notes Status can be Approved, Rejected, SentBack
  */
 async function applicationStatus(req, res) {
     try {
@@ -83,15 +84,47 @@ async function applicationStatus(req, res) {
         const admin_role = req.body.role;
         const admin_id = req.body.id;
         const status = req.body;
-        await Application.update(
-            {
-                status: status,
-                approved_by: admin_id
-            },
-            {
-                where: { id: id }
+        if(status === "Rejected") {
+            await Application.update(
+                {
+                    status: status,
+                    approved_by: admin_id
+                },
+                {
+                    where: { id: id }
+                }
+            )
+        }
+        if(status === "SentBack") {
+            await Application.update(
+                {
+                    status: status,
+                    forwarded_to: Admin.findByPk(admin_id).role
+                },
+                {
+                    where: { id: id }
+                }
+            )
+        }
+        if(status === "Approved") {
+            if(admin_role === "assistant_registrar") {
+                await assistant_registrarApproval(id, admin_id);
+            } else if(admin_role === "division_admin") {
+                await division_adminApproval(id, admin_id);
+            } else if(admin_role === "registrar") {
+                await Application.update(
+                    {
+                        status: status,
+                        approved_by: admin_id
+                    },
+                    {
+                        where: { id: id }
+                    }
+                )
+            } else {
+                res.send("Invalid role");
             }
-        )
+        }
         // res.redirect(`/admin/applications/${id}`);
         res.send(`Status changed to ${status} of application id ${id}`);
         console.log("Status updated successfully");
@@ -99,6 +132,50 @@ async function applicationStatus(req, res) {
     catch (e) {
         res.send("Staus update failed");
         console.log(e.message);
+    }
+}
+
+async function assistant_registrarApproval(applicationId, admin_id) {
+    let application = await Application.findByPk(applicationId);
+    if(application.society_type !== "Autonomous") {
+        application.approved_by = admin_id;
+        application.forwarded_to = "division_admin";
+        application.save();
+    } else  {
+        if(application.level === 1) {
+            application.approved_by = admin_id;
+            application.status = "Approved";
+            application.save();
+        } else {
+            application.approved_by = admin_id;
+            application.forwarded_to = "division_admin";
+            application.save();
+        }
+    }
+}
+
+async function division_adminApproval(applicationId, admin_id) {
+    let application = await Application.findByPk(applicationId);
+    if(application.society_type !== "Autonomous") {
+        if(application.level <=2) {
+            application.approved_by = admin_id;
+            application.status = "Approved";
+            application.save();
+        } else {
+            application.approved_by = admin_id;
+            application.forwarded_to = "registrar";
+            application.save();
+        }
+    } else {
+        if(application.level === 2) {
+            application.approved_by = admin_id;
+            application.status = "Approved";
+            application.save();
+        } else {
+            application.approved_by = admin_id;
+            application.forwarded_to = "registrar";
+            application.save();
+        }
     }
 }
 
