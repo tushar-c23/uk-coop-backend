@@ -2,6 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize(process.env.DB_URI);
 
 const districts = ["Almora", "Nainital", "Chamoli", "Dehradun", "Haridwar", "Pauri Garhwal", "Pithoragarh", "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi", "Champawat", "Bageshwar"];
+const adminRoles = ['master_admin','district_admin','assistant_registrar','division_admin','registrar'];
 
 const Admin = sequelize.define('Admin', {
     // Model attributes are defined here
@@ -50,7 +51,7 @@ const Admin = sequelize.define('Admin', {
         type: DataTypes.STRING,
         allowNull: true,
         defaultValue: 'user',
-        isIn: [['master_admin','district_admin']],
+        isIn: [adminRoles],
         get() {
             return this.getDataValue('role');
         },

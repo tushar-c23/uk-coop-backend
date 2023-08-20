@@ -1,12 +1,14 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize(process.env.DB_URI);
 const User = require('./user');
+const Admin = require('./admin');
 
 // Possible bifercation of promoter possible, but not required as of now
 //TODO: Add all districts and others
 const districts = ["Almora", "Nainital", "Chamoli", "Dehradun", "Haridwar", "Pauri Garhwal", "Pithoragarh", "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi", "Champawat", "Bageshwar"];
-const society_types = ["Deendayal", "Cooperative Deal Plan", "Fisheries", "Dairy", "Sheep & Goat"];
+const society_types = ["Deendayal", "Cooperative Deal Plan", "Fisheries", "Dairy", "Sheep & Goat", "Autonomous"];
 const divisions = ["Kumaon", "Garhwal"];
+const adminRoles = ['master_admin','district_admin','assistant_registrar','division_admin','registrar'];
 
 const Application = sequelize.define('Application', {
     // Model attributes are defined here
@@ -73,7 +75,7 @@ const Application = sequelize.define('Application', {
         }
     },
     level: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: false,
         get() {
             return this.getDataValue('level');
@@ -245,6 +247,27 @@ const Application = sequelize.define('Application', {
         },
         set(value) {
             this.setDataValue('status', value);
+        }
+    },
+    approved_by: {
+        type: DataTypes.UUID,
+        allowNull: true,
+        references: {
+            model: Admin,
+            key: 'id'
+        },
+        isUUID: 4
+    },
+    forwarded_to: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: "assistant_registrar",
+        isIn: [adminRoles],
+        get() {
+            return this.getDataValue('forwarded_to');
+        },
+        set(value) {
+            this.setDataValue('forwarded_to', value);
         }
     },
     submission_date: {

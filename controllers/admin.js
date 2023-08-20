@@ -16,6 +16,38 @@ async function allApplications(req, res) {
     }
 }
 
+async function allRegularApplicationsByRole(req, res) {
+    const admin_role = req.body.role;
+    const district = req.body.district;
+    let applicationApprovedByRole=null;
+    let levelByAdminRole=0;
+    switch (admin_role) {
+        case "assistant_registrar": {
+            applicationApprovedByRole = null;
+            levelByAdminRole = 0;
+        } case "division_admin" : {
+            applicationApprovedByRole = "assistant_registrar";
+            levelByAdminRole = 0;
+        } case "registrar" : {
+            applicationApprovedByRole = "division_admin";
+            levelByAdminRole = 2;
+        }
+    }
+    try {
+        const applications = await Application.findAll({
+            where: {
+                promoter_district: district,
+                approved_by: applicationApprovedByRole,
+                level: {
+                    [Op.gt]: levelByAdminRole
+                }
+            }
+        });
+        res.send(applications);
+        console.log("All applications fetched successfully");
+    }
+}
+
 async function singleApplication(req, res) {
     try {
         const { id } = req.params;
@@ -39,13 +71,22 @@ async function singleApplication(req, res) {
     }
 }
 
+/**
+ * 
+ * @param {*} req admin_role,admin_id,status
+ * @param {*} res Status changed to ${status} of application id ${id} || Staus update failed
+ * @notes Status can be Approved, Rejected, Pending or anything else
+ */
 async function applicationStatus(req, res) {
     try {
         const { id } = req.params;
-        const { status } = req.body;
+        const admin_role = req.body.role;
+        const admin_id = req.body.id;
+        const status = req.body;
         await Application.update(
             {
                 status: status,
+                approved_by: admin_id
             },
             {
                 where: { id: id }
@@ -56,7 +97,7 @@ async function applicationStatus(req, res) {
         console.log("Status updated successfully");
     }
     catch (e) {
-        res.send("Staus updated failed");
+        res.send("Staus update failed");
         console.log(e.message);
     }
 }
