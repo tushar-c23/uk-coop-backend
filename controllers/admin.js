@@ -16,35 +16,31 @@ async function allApplications(req, res) {
     }
 }
 
-async function allRegularApplicationsByRole(req, res) {
-    const admin_role = req.body.role;
-    const district = req.body.district;
-    let applicationApprovedByRole=null;
-    let levelByAdminRole=0;
-    switch (admin_role) {
-        case "assistant_registrar": {
-            applicationApprovedByRole = null;
-            levelByAdminRole = 0;
-        } case "division_admin" : {
-            applicationApprovedByRole = "assistant_registrar";
-            levelByAdminRole = 0;
-        } case "registrar" : {
-            applicationApprovedByRole = "division_admin";
-            levelByAdminRole = 2;
-        }
-    }
+async function allApplicationsByRole(req, res) {
     try {
+        const admin_role = req.body.role;
+        const district = req.body.district;
+        let applicationForwardedToByRole = null;
+        switch (admin_role) {
+            case "assistant_registrar": {
+                applicationForwardedToByRole = "null";
+            } case "division_admin": {
+                applicationForwardedToByRole = "division_admin"
+            } case "registrar": {
+                applicationApprovedByRole = "registrar";
+            }
+        }
         const applications = await Application.findAll({
             where: {
                 promoter_district: district,
-                approved_by: applicationApprovedByRole,
-                level: {
-                    [Op.gt]: levelByAdminRole
-                }
+                forwarded_to: applicationForwardedToByRole
             }
         });
         res.send(applications);
         console.log("All applications fetched successfully");
+    }
+    catch (e) {
+        res.send(e.message);
     }
 }
 
@@ -62,7 +58,7 @@ async function singleApplication(req, res) {
         //     due_date: application.due_date,
         //     status: application.status
         // };
-        res.send({status:200, message:"Application fetched Successfully" ,data:application});
+        res.send({ status: 200, message: "Application fetched Successfully", data: application });
         console.log("Single application fetched successfully");
     }
     catch (e) {
@@ -84,7 +80,7 @@ async function applicationStatus(req, res) {
         const admin_role = req.body.role;
         const admin_id = req.body.id;
         const status = req.body;
-        if(status === "Rejected") {
+        if (status === "Rejected") {
             await Application.update(
                 {
                     status: status,
@@ -95,7 +91,7 @@ async function applicationStatus(req, res) {
                 }
             )
         }
-        if(status === "SentBack") {
+        if (status === "SentBack") {
             await Application.update(
                 {
                     status: status,
@@ -106,12 +102,12 @@ async function applicationStatus(req, res) {
                 }
             )
         }
-        if(status === "Approved") {
-            if(admin_role === "assistant_registrar") {
+        if (status === "Approved") {
+            if (admin_role === "assistant_registrar") {
                 await assistant_registrarApproval(id, admin_id);
-            } else if(admin_role === "division_admin") {
+            } else if (admin_role === "division_admin") {
                 await division_adminApproval(id, admin_id);
-            } else if(admin_role === "registrar") {
+            } else if (admin_role === "registrar") {
                 await Application.update(
                     {
                         status: status,
@@ -137,12 +133,12 @@ async function applicationStatus(req, res) {
 
 async function assistant_registrarApproval(applicationId, admin_id) {
     let application = await Application.findByPk(applicationId);
-    if(application.society_type !== "Autonomous") {
+    if (application.society_type !== "Autonomous") {
         application.approved_by = admin_id;
         application.forwarded_to = "division_admin";
         application.save();
-    } else  {
-        if(application.level === 1) {
+    } else {
+        if (application.level === 1) {
             application.approved_by = admin_id;
             application.status = "Approved";
             application.save();
@@ -156,8 +152,8 @@ async function assistant_registrarApproval(applicationId, admin_id) {
 
 async function division_adminApproval(applicationId, admin_id) {
     let application = await Application.findByPk(applicationId);
-    if(application.society_type !== "Autonomous") {
-        if(application.level <=2) {
+    if (application.society_type !== "Autonomous") {
+        if (application.level <= 2) {
             application.approved_by = admin_id;
             application.status = "Approved";
             application.save();
@@ -167,7 +163,7 @@ async function division_adminApproval(applicationId, admin_id) {
             application.save();
         }
     } else {
-        if(application.level === 2) {
+        if (application.level === 2) {
             application.approved_by = admin_id;
             application.status = "Approved";
             application.save();
@@ -253,4 +249,4 @@ async function loginAdmin(req, res) {
     }
 }
 
-module.exports = { allApplications, singleApplication, applicationStatus, applicationsInDistrict, registerAdmin, loginAdmin };
+module.exports = { allApplications, singleApplication, applicationStatus, applicationsInDistrict, registerAdmin, loginAdmin, allApplicationsByRole };

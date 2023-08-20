@@ -20,4 +20,7 @@ router.route('/applications/:id')
 router.route('/applications/:id')
     .post(admin.applicationStatus);
 
+router.route('/application/role')
+    .get(admin.allApplicationsByRole)
+
 module.exports = router;
