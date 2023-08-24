@@ -20,33 +20,40 @@ async function allApplicationsByRole(req, res) {
     try {
         const admin_role = req.body.role;
         const district = req.body.district;
-        let applicationForwardedToByRole = null;
-        switch (admin_role) {
+        let applicationForwardedToByRole="";
+        switch ((admin_role).toString()) {
             case "assistant_registrar": {
                 applicationForwardedToByRole = "null";
+                break;
             } case "division_admin": {
                 applicationForwardedToByRole = "division_admin"
+                break;
             } case "registrar": {
-                applicationApprovedByRole = "registrar";
+                applicationForwardedToByRole = "registrar";
+                break;
             }
+            default:
+                applicationForwardedToByRole=null
         }
+             
         const applications = await Application.findAll({
             where: {
                 promoter_district: district,
                 forwarded_to: applicationForwardedToByRole
             }
         });
-        res.send(applications);
+        res.send({status:200,data: applications});
         console.log("All applications fetched successfully");
     }
     catch (e) {
+        console.log('Error in fetching applications');
         res.send(e.message);
     }
 }
 
 async function singleApplication(req, res) {
     try {
-        const { id } = req.params;
+        const { id } = req.query;
         const application = await Application.findOne({
             where: {
                 id: id
@@ -76,10 +83,10 @@ async function singleApplication(req, res) {
  */
 async function applicationStatus(req, res) {
     try {
-        const { id } = req.params;
+        const { id } = req.query;
         const admin_role = req.body.role;
         const admin_id = req.body.id;
-        const status = req.body;
+        const status = req.body.status;
         if (status === "Rejected") {
             await Application.update(
                 {
@@ -205,7 +212,7 @@ async function registerAdmin(req, res) {
         console.log(role + " created successfully");
         res.send({
             status: 200,
-            message: role + " created successfully" + district ? " in " + district : "",
+            message: district ? role + " created successfully" + " in " + district : role + " created successfully",
             data: newAdmin,
         });
     } catch (e) {

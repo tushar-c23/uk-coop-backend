@@ -11,16 +11,16 @@ router.route('/login')
 router.route('/applications/all')
     .get(admin.allApplications);
 
-router.route('/applications')
+router.route('/applications/district')
     .get(admin.applicationsInDistrict);
 
-router.route('/applications/:id')
+router.route('/application')
     .get(admin.singleApplication);
 
-router.route('/applications/:id')
+router.route('/application')
     .post(admin.applicationStatus);
 
-router.route('/application/role')
+router.route('/applications/role')
     .get(admin.allApplicationsByRole)
 
 module.exports = router;

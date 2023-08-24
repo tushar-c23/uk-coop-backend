@@ -8,7 +8,7 @@ const Admin = require('./admin');
 const districts = ["Almora", "Nainital", "Chamoli", "Dehradun", "Haridwar", "Pauri Garhwal", "Pithoragarh", "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi", "Champawat", "Bageshwar"];
 const society_types = ["Deendayal", "Cooperative Deal Plan", "Fisheries", "Dairy", "Sheep & Goat", "Autonomous"];
 const divisions = ["Kumaon", "Garhwal"];
-const adminRoles = ['master_admin','district_admin','assistant_registrar','division_admin','registrar'];
+const adminRoles = ['master_admin', 'district_admin', 'assistant_registrar', 'division_admin', 'registrar'];
 
 const Application = sequelize.define('Application', {
     // Model attributes are defined here
