@@ -16,6 +16,11 @@ async function allApplications(req, res) {
     }
 }
 
+/**
+ * 
+ * @param {*} body role,district
+ * @returns {*} res - applications according to role
+ */
 async function allApplicationsByRole(req, res) {
     try {
         const admin_role = req.body.role;
@@ -51,6 +56,11 @@ async function allApplicationsByRole(req, res) {
     }
 }
 
+/**
+ * 
+ * @param {*} req : query - applicationId 
+ * @returns {*} res - single application 
+ */
 async function singleApplication(req, res) {
     try {
         const { id } = req.query;
@@ -76,7 +86,7 @@ async function singleApplication(req, res) {
 
 /**
  * 
- * @param {*} params applicationId
+ * @param {*} query applicationId
  * @param {*} req admin_role,admin_id,status
  * @returns Status changed to ${status} of application id ${id} || Staus update failed
  * @notes Status can be Approved, Rejected, SentBack
@@ -182,6 +192,11 @@ async function division_adminApproval(applicationId, admin_id) {
     }
 }
 
+/**
+ * 
+ * @param {*} req : query - district
+ * @param {*} res : applications in district
+ */
 async function applicationsInDistrict(req, res) {
     try {
         const { district } = req.query;
