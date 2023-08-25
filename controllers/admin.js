@@ -23,8 +23,8 @@ async function allApplications(req, res) {
  */
 async function allApplicationsByRole(req, res) {
     try {
-        const admin_role = req.body.role;
-        const district = req.body.district;
+        const admin_role = req.query.role;
+        const district = req.query.district;
         let applicationForwardedToByRole="";
         switch ((admin_role).toString()) {
             case "assistant_registrar": {
