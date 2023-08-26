@@ -25,10 +25,11 @@ async function allApplicationsByRole(req, res) {
     try {
         const admin_role = req.query.role;
         const district = req.query.district;
+        const division = req.query.division;
         let applicationForwardedToByRole="";
         switch ((admin_role).toString()) {
             case "assistant_registrar": {
-                applicationForwardedToByRole = "null";
+                applicationForwardedToByRole = "assistant_registrar";
                 break;
             } case "division_admin": {
                 applicationForwardedToByRole = "division_admin"
@@ -40,13 +41,31 @@ async function allApplicationsByRole(req, res) {
             default:
                 applicationForwardedToByRole=null
         }
-             
-        const applications = await Application.findAll({
-            where: {
-                promoter_district: district,
-                forwarded_to: applicationForwardedToByRole
-            }
-        });
+
+        let applications = null;
+
+        if(district && admin_role==="assistant_registrar"){     
+            applications = await Application.findAll({
+                where: {
+                    promoter_district: district,
+                    forwarded_to: applicationForwardedToByRole
+                }
+            });
+        } else if(division && admin_role==="division_admin"){
+            applications = await Application.findAll({
+                where: {
+                    division: division,
+                    forwarded_to: applicationForwardedToByRole
+                }
+            });
+        } else {
+            applications = await Application.findAll({
+                where: {
+                    forwarded_to: applicationForwardedToByRole
+                }
+            });
+        }
+
         res.send({status:200,data: applications});
         console.log("All applications fetched successfully");
     }
