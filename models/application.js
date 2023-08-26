@@ -1,5 +1,8 @@
+const env = require('dotenv').config();
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize(process.env.DB_URI);
+const sequelize = new Sequelize(process.env.DB_URI, {
+    dialect: 'postgres'
+});
 const User = require('./user');
 const Admin = require('./admin');
 
@@ -102,6 +105,17 @@ const Application = sequelize.define('Application', {
         },
         set(value) {
             this.setDataValue('address', value);
+        }
+    },
+    district: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        isIn: [districts],
+        get() {
+            return this.getDataValue('promoter_district');
+        },
+        set(value) {
+            this.setDataValue('promoter_district', value);
         }
     },
     division: {
@@ -290,7 +304,7 @@ const Application = sequelize.define('Application', {
     }
 })
 
-Application.sync({ alter: true }).then(
+Application.sync({ force: true }).then(
     () => console.log("Applications table synced successfully")
 );
 

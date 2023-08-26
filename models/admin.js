@@ -1,5 +1,8 @@
+const env = require('dotenv').config();
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize(process.env.DB_URI);
+const sequelize = new Sequelize(process.env.DB_URI, {
+    dialect: 'postgres'
+});
 
 const districts = ["Almora", "Nainital", "Chamoli", "Dehradun", "Haridwar", "Pauri Garhwal", "Pithoragarh", "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi", "Champawat", "Bageshwar"];
 const adminRoles = ['master_admin','district_admin','assistant_registrar','division_admin','registrar'];
@@ -73,7 +76,7 @@ const Admin = sequelize.define('Admin', {
 });
 
 // TODO: Call this efficiently
-Admin.sync({alter: true}).then(
+Admin.sync({force: true}).then(
     () => console.log("Admin table created successfully")
 );
 

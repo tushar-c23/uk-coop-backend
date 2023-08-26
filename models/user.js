@@ -1,5 +1,8 @@
+const env = require('dotenv').config();
 const { Sequelize, DataTypes } = require('sequelize');
-const sequelize = new Sequelize(process.env.DB_URI);
+const sequelize = new Sequelize(process.env.DB_URI, {
+    dialect: 'postgres'
+});
 
 const districts = ["Almora", "Nainital", "Chamoli", "Dehradun", "Haridwar", "Pauri Garhwal", "Pithoragarh", "Rudraprayag", "Tehri Garhwal", "Udham Singh Nagar", "Uttarkashi", "Champawat", "Bageshwar"];
 
@@ -47,7 +50,7 @@ const User = sequelize.define('User', {
 });
 
 // TODO: Call this efficiently
-User.sync({alter: true}).then(
+User.sync({force: true}).then(
     () => console.log("User table created successfully")
 );
 
