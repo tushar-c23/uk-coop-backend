@@ -52,7 +52,10 @@ async function applicationStatus(req, res) {
                 id: application[i].id,
                 submission_date: application[i].submission_date,
                 due_date: application[i].due_date,
-                status: application[i].status
+                status: application[i].status,
+                comments: application[i].comments,
+                actin_date: application[i].action_date,
+                forwarded_to: application[i].forwarded_to
             })
         }
         res.send(data);

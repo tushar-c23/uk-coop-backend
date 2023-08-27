@@ -90,7 +90,7 @@ async function singleApplication(req, res) {
 /**
  * 
  * @param {*} query applicationId
- * @param {*} req admin_role,admin_id,status
+ * @param {*} req admin_role,admin_id,status, comments
  * @returns Status changed to ${status} of application id ${id} || Staus update failed
  * @notes Status can be Approved, Rejected, SentBack
  */
@@ -100,50 +100,68 @@ async function applicationStatus(req, res) {
         const admin_role = req.body.role;
         const admin_id = req.body.id;
         const status = req.body.status;
+        const comments = req.body.comments;
+        let fulfilled = false;
+        console.log(req.body.admin_role);
+        console.log(req.body.admin_role === "assistant_registrar");
         if (status === "Rejected") {
             await Application.update(
                 {
                     status: status,
-                    approved_by: admin_id
+                    approved_by: admin_id,
+                    action_date: Date.now()
                 },
                 {
                     where: { id: id }
                 }
             )
+            fulfilled = true;
         }
         if (status === "SentBack") {
             await Application.update(
                 {
                     status: status,
-                    forwarded_to: Admin.findByPk(admin_id).role
+                    forwarded_to: Admin.findByPk(admin_id).role,
+                    comments: comments,
+                    action_date: Date.now()
                 },
                 {
                     where: { id: id }
                 }
             )
+            fulfilled = true;
         }
         if (status === "Approved") {
             if (admin_role === "assistant_registrar") {
+                console.log("in assistant_registrar");
                 await assistant_registrarApproval(id, admin_id);
+                fulfilled = true;
             } else if (admin_role === "division_admin") {
                 await division_adminApproval(id, admin_id);
+                fulfilled = true;
             } else if (admin_role === "registrar") {
                 await Application.update(
                     {
                         status: status,
-                        approved_by: admin_id
+                        approved_by: admin_id,
+                        action_date: Date.now()
                     },
                     {
                         where: { id: id }
                     }
                 )
+                fulfilled = true;
             } else {
-                res.send("Invalid role");
+                console.log("Invalid role");
             }
         }
+        if (!fulfilled) {
+            res.send("Invalid status update");
+        } else {
+            res.send(`Status changed to ${status} of application id ${id}`);
+            console.log("Status updated successfully");
+        }
         // res.redirect(`/admin/applications/${id}`);
-        res.send(`Status changed to ${status} of application id ${id}`);
-        console.log("Status updated successfully");
     }
     catch (e) {
         res.send("Staus update failed");
@@ -156,15 +174,18 @@ async function assistant_registrarApproval(applicationId, admin_id) {
     if (application.society_type !== "Autonomous") {
         application.approved_by = admin_id;
         application.forwarded_to = "division_admin";
+        application.action_date = Date.now();
         application.save();
     } else {
         if (application.level === 1) {
             application.approved_by = admin_id;
             application.status = "Approved";
+            application.action_date = Date.now();
             application.save();
         } else {
             application.approved_by = admin_id;
             application.forwarded_to = "division_admin";
+            application.action_date = Date.now();
             application.save();
         }
     }
@@ -176,20 +197,24 @@ async function division_adminApproval(applicationId, admin_id) {
         if (application.level <= 2) {
             application.approved_by = admin_id;
             application.status = "Approved";
+            application.action_date = Date.now();
             application.save();
         } else {
             application.approved_by = admin_id;
             application.forwarded_to = "registrar";
+            application.action_date = Date.now();
             application.save();
         }
     } else {
         if (application.level === 2) {
             application.approved_by = admin_id;
             application.status = "Approved";
+            application.action_date = Date.now();
             application.save();
         } else {
             application.approved_by = admin_id;
             application.forwarded_to = "registrar";
+            application.action_date = Date.now();
             application.save();
         }
     }

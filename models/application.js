@@ -301,6 +301,46 @@ const Application = sequelize.define('Application', {
         set(value) {
             this.setDataValue('due_date', value);
         }
+    },
+    action_date: {
+        type: DataTypes.DATE,
+        allowNull: true,
+        get() {
+            return this.getDataValue('action_date');
+        },
+        set(value) {
+            this.setDataValue('action_date', value);
+        }
+    },
+    comments: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        get() {
+            return this.getDataValue('comments');
+        },
+        set(value) {
+            this.setDataValue('comments', value);
+        }
+    },
+    documentTwo_link: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        get() {
+            return this.getDataValue('documentTwo_link');
+        },
+        set(value) {
+            this.setDataValue('documentTwo_link', value);
+        }
+    },
+    documentThree_link: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        get() {
+            return this.getDataValue('documentThree_link');
+        },
+        set(value) {
+            this.setDataValue('documentThree_link', value);
+        }
     }
 })
 
