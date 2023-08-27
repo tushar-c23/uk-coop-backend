@@ -112,10 +112,10 @@ const Application = sequelize.define('Application', {
         allowNull: false,
         isIn: [districts],
         get() {
-            return this.getDataValue('promoter_district');
+            return this.getDataValue('district');
         },
         set(value) {
-            this.setDataValue('promoter_district', value);
+            this.setDataValue('district', value);
         }
     },
     division: {
@@ -304,7 +304,7 @@ const Application = sequelize.define('Application', {
     }
 })
 
-Application.sync({ force: true }).then(
+Application.sync({ alter: true }).then(
     () => console.log("Applications table synced successfully")
 );
 

@@ -26,42 +26,42 @@ async function allApplicationsByRole(req, res) {
         const admin_role = req.query.role;
         const district = req.query.district;
         const division = req.query.division;
-        let applicationForwardedToByRole="";
-        switch ((admin_role).toString()) {
-            case "assistant_registrar": {
-                applicationForwardedToByRole = "assistant_registrar";
-                break;
-            } case "division_admin": {
-                applicationForwardedToByRole = "division_admin"
-                break;
-            } case "registrar": {
-                applicationForwardedToByRole = "registrar";
-                break;
-            }
-            default:
-                applicationForwardedToByRole=null
-        }
+        // let applicationForwardedToByRole="";
+        // switch ((admin_role).toString()) {
+        //     case "assistant_registrar": {
+        //         applicationForwardedToByRole = "assistant_registrar";
+        //         break;
+        //     } case "division_admin": {
+        //         applicationForwardedToByRole = "division_admin"
+        //         break;
+        //     } case "registrar": {
+        //         applicationForwardedToByRole = "registrar";
+        //         break;
+        //     }
+        //     default:
+        //         applicationForwardedToByRole=null
+        // }
 
         let applications = null;
 
-        if(district && admin_role==="assistant_registrar"){     
+        if(admin_role==="assistant_registrar"){     
             applications = await Application.findAll({
                 where: {
-                    promoter_district: district,
-                    forwarded_to: applicationForwardedToByRole
+                    district: district,
+                    forwarded_to: "assistant_registrar"
                 }
             });
-        } else if(division && admin_role==="division_admin"){
+        } else if(admin_role==="division_admin"){
             applications = await Application.findAll({
                 where: {
                     division: division,
-                    forwarded_to: applicationForwardedToByRole
+                    forwarded_to: "division_admin"
                 }
             });
         } else {
             applications = await Application.findAll({
                 where: {
-                    forwarded_to: applicationForwardedToByRole
+                    forwarded_to: "registrar"
                 }
             });
         }

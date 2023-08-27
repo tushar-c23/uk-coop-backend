@@ -2,8 +2,8 @@ const User = require('../models/user');
 const bcrypt = require('bcrypt');
 /**
  * 
- * @param { email, password, mobile_number} req 
- * @param { User, message, status} res
+ * @param {*} req  body email, password, mobile_number
+ * @param {*} res User, message, status
  * @description Register a user via simple push data to DB
  * @returns "User created successfully" || "Error in registering user"
  * @todo Add regex verification for email and mobile_number

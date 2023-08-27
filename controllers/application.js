@@ -4,6 +4,7 @@ const Application = require('../models/application');
 async function applicationForm(req, res) {
     try {
         const data = req.body;
+        console.log(data);
         const { email } = req.body;
 
         //Find the user using the email

@@ -72,11 +72,11 @@ const Admin = sequelize.define('Admin', {
         set(value) {
             this.setDataValue('district', value);
         }
-    }
+    },
 });
 
 // TODO: Call this efficiently
-Admin.sync({force: true}).then(
+Admin.sync({alter: true}).then(
     () => console.log("Admin table created successfully")
 );
 
