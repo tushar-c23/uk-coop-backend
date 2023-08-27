@@ -26,22 +26,6 @@ async function allApplicationsByRole(req, res) {
         const admin_role = req.query.role;
         const district = req.query.district;
         const division = req.query.division;
-        // let applicationForwardedToByRole="";
-        // switch ((admin_role).toString()) {
-        //     case "assistant_registrar": {
-        //         applicationForwardedToByRole = "assistant_registrar";
-        //         break;
-        //     } case "division_admin": {
-        //         applicationForwardedToByRole = "division_admin"
-        //         break;
-        //     } case "registrar": {
-        //         applicationForwardedToByRole = "registrar";
-        //         break;
-        //     }
-        //     default:
-        //         applicationForwardedToByRole=null
-        // }
-
         let applications = null;
 
         if(admin_role==="assistant_registrar"){     
@@ -234,13 +218,14 @@ async function applicationsInDistrict(req, res) {
 
 async function registerAdmin(req, res) {
     try {
-        const { username, password, mobile_number, role, district } = req.body;
+        const { username, password, mobile_number, role, district, division } = req.body;
         const data = {
             username,
             password: await bcrypt.hash(password, 12),
             mobile_number,
             role,
-            district
+            district,
+            division
         }
         const newAdmin = await Admin.create(data);
         console.log(role + " created successfully");
