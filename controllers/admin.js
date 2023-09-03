@@ -102,27 +102,14 @@ async function applicationStatus(req, res) {
         const status = req.body.status;
         const comments = req.body.comments;
         let fulfilled = false;
-        console.log(req.body.admin_role);
-        console.log(req.body.admin_role === "assistant_registrar");
+
         if (status === "Rejected") {
             await Application.update(
                 {
                     status: status,
                     approved_by: admin_id,
-                    action_date: Date.now()
-                },
-                {
-                    where: { id: id }
-                }
-            )
-            fulfilled = true;
-        }
-        if (status === "SentBack") {
-            await Application.update(
-                {
-                    status: status,
-                    forwarded_to: Admin.findByPk(admin_id).role,
                     comments: comments,
+                    forwarded_to: null,
                     action_date: Date.now()
                 },
                 {
@@ -131,9 +118,57 @@ async function applicationStatus(req, res) {
             )
             fulfilled = true;
         }
+        
+        if (status === "SentBack") {
+            if(admin_role==="assistant_registrar") {
+                await Application.update(
+                    {
+                        status: "Pending",
+                        approved_by: admin_id,
+                        comments: comments,
+                        forwarded_to: null,
+                        action_date: Date.now()
+                    },
+                    {
+                        where: { id: id }
+                    }
+                )
+                fulfilled = true;
+            } else if(admin_role==="division_admin") {
+                await Application.update(
+                    {
+                        status: "SentBack",
+                        approved_by: admin_id,
+                        comments: comments,
+                        forwarded_to: "assistant_registrar",
+                        action_date: Date.now()
+                    },
+                    {
+                        where: { id: id }
+                    }
+                )
+                fulfilled = true;
+            } else if(admin_role==="registrar") {
+                await Application.update(
+                    {
+                        status: "SentBack",
+                        approved_by: admin_id,
+                        comments: comments,
+                        forwarded_to: "division_admin",
+                        action_date: Date.now()
+                    },
+                    {
+                        where: { id: id }
+                    }
+                )
+                fulfilled = true;
+            } else {
+                console.log("Invalid role");
+            }
+        }
+
         if (status === "Approved") {
             if (admin_role === "assistant_registrar") {
-                console.log("in assistant_registrar");
                 await assistant_registrarApproval(id, admin_id);
                 fulfilled = true;
             } else if (admin_role === "division_admin") {
@@ -155,6 +190,7 @@ async function applicationStatus(req, res) {
                 console.log("Invalid role");
             }
         }
+
         if (!fulfilled) {
             res.send("Invalid status update");
         } else {
